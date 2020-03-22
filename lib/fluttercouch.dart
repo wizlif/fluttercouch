@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:flutter/services.dart';
 import 'package:fluttercouch/document.dart';
@@ -7,8 +8,8 @@ abstract class Fluttercouch {
   static const MethodChannel _methodChannel =
       const MethodChannel('it.oltrenuovefrontiere.fluttercouch');
 
-  static const EventChannel _replicationEventChannel =
-    const EventChannel("it.oltrenuovefrontiere.fluttercouch/replicationEventChannel");
+  static const EventChannel _replicationEventChannel = const EventChannel(
+      "it.oltrenuovefrontiere.fluttercouch/replicationEventChannel");
 
   Future<String> initDatabaseWithName(String _name) async {
     try {
@@ -22,7 +23,8 @@ abstract class Fluttercouch {
 
   Future<String> saveDocument(Document _doc) async {
     try {
-      final String result = await _methodChannel.invokeMethod('saveDocument', _doc.toMap());
+      final String result =
+          await _methodChannel.invokeMethod('saveDocument', _doc.toMap());
       return result;
     } on PlatformException {
       throw 'unable to save the document';
@@ -32,7 +34,8 @@ abstract class Fluttercouch {
   Future<String> saveDocumentWithId(String _id, Document _doc) async {
     try {
       final String result = await _methodChannel.invokeMethod(
-          'saveDocumentWithId', <String, dynamic>{'id': _id, 'map': _doc.toMap()});
+          'saveDocumentWithId',
+          <String, dynamic>{'id': _id, 'map': _doc.toMap()});
       return result;
     } on PlatformException {
       throw 'unable to save the document with set id $_id';
@@ -67,7 +70,8 @@ abstract class Fluttercouch {
 
   Future<bool> setReplicatorContinuous(bool _continuous) async {
     try {
-      final bool result = await _methodChannel.invokeMethod('setReplicatorContinuous', _continuous);
+      final bool result = await _methodChannel.invokeMethod(
+          'setReplicatorContinuous', _continuous);
       return result;
     } on PlatformException {
       throw 'unable to set replicator continuous setting to $_continuous';
@@ -85,9 +89,51 @@ abstract class Fluttercouch {
     }
   }
 
+  Future<List<String>> setReplicatorChannels(List<String> _channels) async {
+    try {
+      final List<String> result =
+          await _methodChannel.invokeMethod('setReplicatorChannels', _channels);
+      return result;
+    } on PlatformException {
+      throw 'unable to set replicator channels';
+    }
+  }
+
+  Future<List<String>> setDocumentIDs(List<String> _documentIDs) async {
+    try {
+      final List<String> result =
+          await _methodChannel.invokeMethod('setDocumentIDs', _documentIDs);
+      return result;
+    } on PlatformException {
+      throw 'unable to set replicator document ids';
+    }
+  }
+
+  Future<Map<String, String>> setHeaders(Map<String, String> _headers) async {
+    try {
+      final Map<String, String> result =
+          await _methodChannel.invokeMethod('setHeaders', _headers);
+      return result;
+    } on PlatformException {
+      throw 'unable to set replicator document ids';
+    }
+  }
+
+  Future<Uint8List> setPinnedServerCertificate(
+      Uint8List _pinnedServerCertificate) async {
+    try {
+      final Uint8List result = await _methodChannel.invokeMethod(
+          'setPinnedServerCertificate', _pinnedServerCertificate);
+      return result;
+    } on PlatformException {
+      throw 'unable to set replicator document ids';
+    }
+  }
+
   Future<String> setReplicatorSessionAuthentication(String _sessionID) async {
     try {
-      final String result = await _methodChannel.invokeMethod('setReplicatorSessionAuthentication', _sessionID);
+      final String result = await _methodChannel.invokeMethod(
+          'setReplicatorSessionAuthentication', _sessionID);
       return result;
     } on PlatformException {
       throw 'unable to set replicator basic authentication';
@@ -121,7 +167,7 @@ abstract class Fluttercouch {
   Future<Map<dynamic, dynamic>> _getDocumentWithId(String _id) async {
     try {
       final Map<dynamic, dynamic> result =
-      await _methodChannel.invokeMethod('getDocumentWithId', _id);
+          await _methodChannel.invokeMethod('getDocumentWithId', _id);
       return result;
     } on PlatformException {
       throw 'unable to get the document with id $_id';

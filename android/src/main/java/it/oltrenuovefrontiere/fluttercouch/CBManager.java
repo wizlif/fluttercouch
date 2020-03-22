@@ -18,6 +18,7 @@ import com.couchbase.litecore.C4Replicator;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CBManager {
@@ -92,17 +93,55 @@ public class CBManager {
         return mReplConfig.getTarget().toString();
     }
 
-    public String setReplicatorType(String _type) throws CouchbaseLiteException {
+    public String setReplicatorType(String _type) {
         ReplicatorConfiguration.ReplicatorType settedType = ReplicatorConfiguration.ReplicatorType.PULL;
-        if (_type.equals("PUSH")) {
-            settedType = ReplicatorConfiguration.ReplicatorType.PUSH;
-        } else if (_type.equals("PULL")) {
-            settedType = ReplicatorConfiguration.ReplicatorType.PULL;
-        } else if (_type.equals("PUSH_AND_PULL")) {
-            settedType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
+        switch (_type) {
+            case "PUSH":
+                settedType = ReplicatorConfiguration.ReplicatorType.PUSH;
+                break;
+            case "PULL":
+                settedType = ReplicatorConfiguration.ReplicatorType.PULL;
+                break;
+            case "PUSH_AND_PULL":
+                settedType = ReplicatorConfiguration.ReplicatorType.PUSH_AND_PULL;
+                break;
         }
         mReplConfig.setReplicatorType(settedType);
         return settedType.toString();
+    }
+
+    public List<String> setReplicatorChannels(List<String> channels){
+        if(mReplConfig == null) throw new NullPointerException("No Replicator Configuration");
+        mReplConfig.setChannels(channels);
+        return mReplConfig.getChannels();
+    }
+
+    public List<String> setDocumentIDs(List<String> documentIDs){
+        if(mReplConfig == null) throw new NullPointerException("No Replicator Configuration");
+        mReplConfig.setDocumentIDs(documentIDs);
+        return mReplConfig.getDocumentIDs();
+    }
+
+    public Map<String,String> setHeaders(Map<String,String> headers){
+        if(mReplConfig == null) throw new NullPointerException("No Replicator Configuration");
+        mReplConfig.setHeaders(headers);
+        return mReplConfig.getHeaders();
+    }
+
+    public byte[] setPinnedServerCertificate(byte[] pinnedServerCertificate){
+        if(mReplConfig == null) throw new NullPointerException("No Replicator Configuration");
+        mReplConfig.setPinnedServerCertificate(pinnedServerCertificate);
+        return mReplConfig.getPinnedServerCertificate();
+    }
+
+    public void setPushFilter(String value, String type){
+        if(mReplConfig == null) throw new NullPointerException("No Replicator Configuration");
+        mReplConfig.setPushFilter((document, flags) -> value.equals(document.getString(type)));
+    }
+
+    public void setPullFilter(String value, String type){
+        if(mReplConfig == null) throw new NullPointerException("No Replicator Configuration");
+        mReplConfig.setPullFilter((document, flags) -> value.equals(document.getString(type)));
     }
 
     public String setReplicatorBasicAuthentication(Map<String, String> _auth) throws Exception {
